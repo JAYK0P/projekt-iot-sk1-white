@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(closeModal){
             closeModal.addEventListener('click', () => {
             addMCUModal.classList.add('hidden');
+            document.getElementById('addMCUForm').reset();
             console.log("opening MCUmodal");
         });
         } 
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(cancelBtn){
             cancelBtn.addEventListener('click', () => {
             addMCUModal.classList.add('hidden');
+            document.getElementById('addMCUForm').reset();
             console.log("opening MCUmodal");
         });
         } 
@@ -60,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Úspěch - zobraz zprávu a zavři modal
                     alert('MCU bylo úspěšně vytvořeno!');
                     addMCUModal.classList.add('hidden');
+                    document.getElementById('addMCUForm').reset();
                 } else {
                     // Chyba - zobraz chybovou hlášku
                     alert('Chyba: ' + data.message);
