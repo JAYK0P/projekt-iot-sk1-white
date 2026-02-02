@@ -1,133 +1,115 @@
-<!-- filepath: c:\Users\mforb\Documents\git\projekt-iot-sk1-white\SBCWeb\src\views\partials\addMCUModal.ejs -->
-<!-- Add MCU Modal -->
-<div id="addMCUModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-  <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-    <!-- Modal Header -->
-    <div class="flex items-center justify-between p-6 border-b border-ash-grey-200">
-      <h2 class="text-2xl font-bold text-midnight-violet-900">Add New MCU</h2>
-      <button id="closeModal" class="text-silver-600 hover:text-silver-800">
-        <i class="fas fa-times text-xl"></i>
-      </button>
+<div id="addMCUModal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-midnight-violet-950/40 backdrop-blur-sm">
+    
+    <div class="relative w-full max-w-2xl flex flex-col bg-silver-50 rounded-xl shadow-2xl overflow-hidden max-h-[90vh]">
+        
+        <div class="flex items-center justify-between p-6 border-b border-ash-grey-200 bg-white shrink-0">
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-microchip text-midnight-violet-900 text-xl"></i>
+                    <h2 class="text-2xl font-bold tracking-tight text-midnight-violet-900">Add New MCU</h2>
+                </div>
+                <p class="text-sm text-gray-500">Zadejte podrobnosti pro přidání mikrokontroléru do sítě.</p>
+            </div>
+            <button type="button" id="closeModal" class="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-lg hover:bg-ash-grey-100">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <form id="addMCUForm" class="flex flex-col flex-1 overflow-hidden">
+            <div class="flex-1 overflow-y-auto p-8 space-y-6 bg-silver-50">
+                
+                <div id="errorMessage" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    <p class="text-sm font-medium"></p>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="mcuName" class="flex items-center gap-2 text-sm font-medium text-midnight-violet-900">
+                        <i class="fas fa-tag text-vintage-grape-500 w-4"></i>
+                        MCU Name <span class="text-red-500">*</span>
+                    </label>
+                    <input id="mcuName" name="name" required type="text" 
+                        class="w-full px-4 py-3 bg-ash-grey-100 border border-ash-grey-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-vintage-grape-500 focus:ring-1 focus:ring-vintage-grape-500 transition-all" 
+                        placeholder="Např. ESP32-Living-Room"/>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-2">
+                        <label for="mcuType" class="flex items-center gap-2 text-sm font-medium text-midnight-violet-900">
+                            <i class="fas fa-cubes text-vintage-grape-500 w-4"></i>
+                            Type <span class="text-red-500">*</span>
+                        </label>
+                        <select id="mcuType" name="type" required 
+                            class="w-full px-4 py-3 bg-ash-grey-100 border border-ash-grey-300 rounded-lg text-gray-900 focus:outline-none focus:border-vintage-grape-500 transition-all appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_1rem_center] bg-no-repeat">
+                            <option value="">Select type...</option>
+                            <option value="ESP32">ESP32</option>
+                            <option value="ESP8266">ESP8266</option>
+                            <option value="Arduino">Arduino</option>
+                            <option value="Raspberry Pi">Raspberry Pi</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="mcuLocation" class="flex items-center gap-2 text-sm font-medium text-midnight-violet-900">
+                            <i class="fas fa-map-marker-alt text-vintage-grape-500 w-4"></i>
+                            Location
+                        </label>
+                        <input id="mcuLocation" name="location" type="text" 
+                            class="w-full px-4 py-3 bg-ash-grey-100 border border-ash-grey-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-vintage-grape-500 transition-all" 
+                            placeholder="e.g., Living Room"/>
+                    </div>
+                </div>
+
+                <div class="h-px bg-ash-grey-200 w-full"></div>
+
+                <div class="space-y-4 pt-4 border-t border-ash-grey-200">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-network-wired text-vintage-grape-500"></i>
+                        <h3 class="text-sm font-bold text-midnight-violet-900 uppercase tracking-widest">Adresace</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label for="mcuIP" class="flex items-center gap-2 text-sm font-medium text-gray-700">
+                                <i class="fas fa-ethernet w-4"></i> IP Adresa
+                            </label>
+                            <input id="mcuIP" name="ipAddress" type="text" 
+                                class="w-full px-4 py-3 bg-ash-grey-100 border border-ash-grey-300 rounded-lg text-gray-900 font-mono text-sm placeholder-gray-400 focus:outline-none focus:border-vintage-grape-500 transition-all" 
+                                placeholder="192.168.1.xxx"/>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="mcuMAC" class="flex items-center gap-2 text-sm font-medium text-gray-700">
+                                <i class="fas fa-id-card text-vintage-grape-500 w-4"></i> MAC Adresa <span class="text-red-500">*</span>
+                            </label>
+                            <input id="mcuMAC" name="macAddress" required type="text" 
+                                class="w-full px-4 py-3 bg-ash-grey-100 border border-ash-grey-300 rounded-lg text-gray-900 font-mono text-sm placeholder-gray-400 focus:outline-none focus:border-vintage-grape-500 transition-all" 
+                                placeholder="00:1A:2B:3C:4D:5E"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="mcuDescription" class="flex items-center gap-2 text-sm font-medium text-midnight-violet-900">
+                        <i class="fas fa-align-left text-vintage-grape-500 w-4"></i>
+                        Description
+                    </label>
+                    <textarea id="mcuDescription" name="description" rows="3"
+                        class="w-full px-4 py-3 bg-ash-grey-100 border border-ash-grey-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-vintage-grape-500 transition-all resize-none" 
+                        placeholder="Stručný popis zařízení..."></textarea>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-ash-grey-200 bg-white flex justify-end gap-3 shrink-0">
+                <button type="button" id="cancelBtn" 
+                    class="px-6 py-2.5 rounded-lg bg-ash-grey-200 text-ash-grey-800 font-medium hover:bg-ash-grey-300 transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" id="submitBtn" 
+                    class="px-6 py-2.5 rounded-lg bg-midnight-violet-500 hover:bg-midnight-violet-600 text-white font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                    <i class="fas fa-plus"></i>
+                    Add MCU
+                </button>
+            </div>
+        </form>
     </div>
-
-    <!-- Modal Body -->
-    <form id="addMCUForm" class="p-6 space-y-4">
-      <!-- Error Message -->
-      <div id="errorMessage" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-        <p class="text-sm"></p>
-      </div>
-
-      <!-- MCU Name -->
-      <div>
-        <label class="block text-sm font-medium text-midnight-violet-900 mb-2">
-          MCU Name <span class="text-red-500">*</span>
-        </label>
-        <input 
-          id="mcuName"
-          type="text" 
-          name="name" 
-          required
-          class="w-full px-4 py-2 border border-ash-grey-300 rounded-lg focus:ring-2 focus:ring-vintage-grape-500 focus:border-transparent"
-          placeholder="e.g., ESP32-Living-Room"
-        >
-      </div>
-
-      <!-- Type -->
-      <div>
-        <label class="block text-sm font-medium text-midnight-violet-900 mb-2">
-          Type <span class="text-red-500">*</span>
-        </label>
-        <select 
-          id="mcuType"
-          name="type" 
-          required
-          class="w-full px-4 py-2 border border-ash-grey-300 rounded-lg focus:ring-2 focus:ring-vintage-grape-500 focus:border-transparent"
-        >
-          <option value="">Select type...</option>
-          <option value="ESP32">ESP32</option>
-          <option value="ESP8266">ESP8266</option>
-          <option value="Arduino">Arduino</option>
-          <option value="Raspberry Pi">Raspberry Pi</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-
-      <!-- IP Address -->
-      <div>
-        <label class="block text-sm font-medium text-midnight-violet-900 mb-2">
-          IP Address
-        </label>
-        <input 
-          id="mcuIP"
-          type="text" 
-          name="ipAddress"
-          class="w-full px-4 py-2 border border-ash-grey-300 rounded-lg focus:ring-2 focus:ring-vintage-grape-500 focus:border-transparent"
-          placeholder="192.168.1.100"
-        >
-        <p class="text-xs text-silver-600 mt-1">Format: xxx.xxx.xxx.xxx</p>
-      </div>
-
-      <!-- MAC Address -->
-      <div>
-        <label class="block text-sm font-medium text-midnight-violet-900 mb-2">
-          MAC Address <span class="text-red-500">*</span>
-        </label>
-        <input 
-          id="mcuMAC"
-          type="text" 
-          name="macAddress"
-          class="w-full px-4 py-2 border border-ash-grey-300 rounded-lg focus:ring-2 focus:ring-vintage-grape-500 focus:border-transparent"
-          placeholder="AA:BB:CC:DD:EE:FF"
-        >
-        <p class="text-xs text-silver-600 mt-1">Format: XX:XX:XX:XX:XX:XX</p>
-      </div>
-
-      <!-- Location -->
-      <div>
-        <label class="block text-sm font-medium text-midnight-violet-900 mb-2">
-          Location
-        </label>
-        <input 
-          id="mcuLocation"
-          type="text" 
-          name="location"
-          class="w-full px-4 py-2 border border-ash-grey-300 rounded-lg focus:ring-2 focus:ring-vintage-grape-500 focus:border-transparent"
-          placeholder="e.g., Living Room, Kitchen"
-        >
-      </div>
-
-      <!-- Description -->
-      <div>
-        <label class="block text-sm font-medium text-midnight-violet-900 mb-2">
-          Description
-        </label>
-        <textarea 
-          id="mcuDescription"
-          name="description"
-          rows="3"
-          class="w-full px-4 py-2 border border-ash-grey-300 rounded-lg focus:ring-2 focus:ring-vintage-grape-500 focus:border-transparent resize-none"
-          placeholder="Add notes or description..."
-        ></textarea>
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="flex justify-end space-x-3 pt-4 border-t border-ash-grey-200">
-        <button 
-          type="button" 
-          id="cancelBtn"
-          class="px-6 py-2 border border-ash-grey-300 text-silver-700 rounded-lg hover:bg-ash-grey-50 transition"
-        >
-          Cancel
-        </button>
-        <button 
-          type="submit"
-          id="submitBtn"
-          class="px-6 py-2 bg-vintage-grape-600 text-white rounded-lg hover:bg-vintage-grape-700 transition"
-        >
-          <i class="fas fa-plus mr-2"></i>
-          Add MCU
-        </button>
-      </div>
-    </form>
-  </div>
 </div>
