@@ -62,11 +62,34 @@ class MCUService {
 
     // UPDATE - aktualizovat MCU
     static updateMCU(id, data) {
+
+        if(!data.name || data.name.trim() ===''){
+            throw new Error('Name je povinné pole');
+        }
+        //IP
+        const ipAddress = data.ipAddress || data.ip_address;
+        if (!ipAddress || ipAddress.trim() === '') {
+            throw new Error('IP adresa je povinná');
+        }
         
-        
-        // Validace
-        // Převod na DB formát
-        // Repository.update
+        //MAC
+        const macAddress = data.mac_address || data.macAddress;
+
+        if (!macAddress || macAddress.trim() === '') {
+            throw new Error('MAC adresa je povinná');
+        }
+
+        const updateData = {
+            name: data.name,
+            type: data.type,
+            ip_address: ipAddress,
+            mac_address: macAddress,
+            location: data.location,
+            description: data.description
+        }
+
+        return MCURepository.update(id, updateData);
+
     }
 
     // DELETE - smazat MCU
