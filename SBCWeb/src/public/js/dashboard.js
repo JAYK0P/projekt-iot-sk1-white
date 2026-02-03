@@ -12,7 +12,7 @@ const toggleSidebarDesktop = document.getElementById('toggleSidebarDesktop');
 const overlay = document.getElementById('sidebarOverlay');
 
 // Sidebar toggle funkce
-let sidebarVisible = false; // Sidebar je defaultně schovaný
+let sidebarVisible = true; // Sidebar je defaultně zobrazený
 
 toggleSidebarDesktop.addEventListener('click', function() {
   sidebarVisible = !sidebarVisible;
