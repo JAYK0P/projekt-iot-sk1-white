@@ -46,17 +46,24 @@ class MCUService {
 
     // READ - získat jedno MCU
     static getMCU(id) {
-        // Repository.findById
-        // Zkontroluj zda existuje
+        const mcu = MCURepository.findById(id);
+        
+        if(!mcu){
+            throw new Error('MCU s daným ID nebylo nalezeno');
+        }
+        
+        return mcu;
     }
 
     // READ - získat všechna MCU
     static getAllMCUs() {
-        // Repository.findAll
+        return MCURepository.findAll();
     }
 
     // UPDATE - aktualizovat MCU
     static updateMCU(id, data) {
+        
+        
         // Validace
         // Převod na DB formát
         // Repository.update
@@ -64,9 +71,13 @@ class MCUService {
 
     // DELETE - smazat MCU
     static deleteMCU(id) {
-        // Repository.delete
+        const success = MCURepository.delete(id);
+        if (!mcu) {
+            throw new Error('MCU s daným ID nebylo nalezeno');
+        }
+        MCURepository.delete(id);
+        return mcu;
     }
-
     // HELPER - vygenerovat API klíč
     static generateApiKey() {
         return 'api_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);

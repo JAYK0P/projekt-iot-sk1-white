@@ -76,6 +76,11 @@ class MCURepository{
         db.prepare(query).run(id);
     }
 
+    static delete(id) {
+        const query = `DELETE FROM mcus WHERE device_id = ?`
+        db.prepare(query).run(id);
+    }
+
 
 }
 
