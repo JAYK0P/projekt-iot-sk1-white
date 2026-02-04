@@ -18,10 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         if(mcuModal.submitBtn){
-            console.log("loaded")
             mcuModal.submitBtn.addEventListener('click', async (e) =>{
               e.preventDefault();
-              console.log("aha")
 
                 const formData = {
                     name: document.getElementById('mcuName').value,
@@ -58,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                 } catch (error) {
-                    showError('Něco se pokazilo. Zkuste to znovu.');
+                    mcuModal.showError('Něco se pokazilo. Zkuste to znovu.');
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add MCU';
                 }
