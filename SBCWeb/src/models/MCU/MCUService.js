@@ -102,7 +102,7 @@ class MCUService {
         const parts = normalized.split(":");
 
         if (parts.length !== 6){
-            throw new Error('Neplatná délka zadané MAC adresy');
+            throw new Error('Neplatná hodnota zadané MAC adresy');
         } 
 
         if (!parts.every(part => part.length === 2 && /^[0-9A-Fa-f]{2}$/.test(part))) {
@@ -122,7 +122,7 @@ class MCUService {
         const parts = normalized.split(".");
 
         if (parts.length !== 4){
-            throw new Error('Neplatná délka zadané IP adresy');
+            throw new Error('Neplatná hodnota zadané IP adresy');
         }
 
         if (!parts.every(part => {

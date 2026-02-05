@@ -4,14 +4,15 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS mcus (
     device_id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    type TEXT,
+    type_id INTEGER,
     ip_address TEXT,
     mac_address TEXT UNIQUE,
     location TEXT,
     description TEXT,
     last_seen TEXT DEFAULT (datetime('now')),
     api_key TEXT,
-    created_at TEXT DEFAULT (datetime('now'))
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (type_id) REFERENCES types(id)
   )
 `);
 
@@ -36,5 +37,12 @@ db.exec(`
     FOREIGN KEY (sensor_id) REFERENCES sensors(sensor_id)
   )
 `);
+
+db.exec(`
+  CREATE TABLE IF NOT EEXISTS types(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  type TEXT UNIQUE NOT NULL
+  )
+  `);
 
 console.log('Databáze inicializována');

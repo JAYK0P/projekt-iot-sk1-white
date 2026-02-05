@@ -4,6 +4,11 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+        // Modal pro přidání typu MCU
+        const addTypeModal = document.getElementById('addTypeModal');
+        const openAddTypeModalBtn = document.getElementById('openAddTypeModal');
+        const cancelAddTypeBtn = document.getElementById('cancelAddType');
+        const addTypeForm = document.getElementById('addTypeForm');
     
     // Elementy
     const mcuGrid = document.getElementById('mcuGrid');
@@ -319,5 +324,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial load
     loadMCUs();
+
+    // Otevření modalu pro přidání typu MCU
+    openAddTypeModalBtn?.addEventListener('click', () => {
+        addTypeModal?.classList.remove('hidden');
+        addTypeModal?.classList.add('flex');
+    });
+
+    // Zavření modalu pro přidání typu MCU
+    cancelAddTypeBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        addTypeModal?.classList.add('hidden');
+        addTypeModal?.classList.remove('flex');
+        addTypeForm?.reset();
+    });
+
+    // Odeslání formuláře pro přidání typu MCU (zatím pouze alert, implementace API později)
+    addTypeForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const typeName = document.getElementById('newTypeName').value.trim();
+        if (typeName) {
+            alert('Přidat typ: ' + typeName + ' (implementace API později)');
+            addTypeModal?.classList.add('hidden');
+            addTypeModal?.classList.remove('flex');
+            addTypeForm?.reset();
+        }
+    });
 
 });

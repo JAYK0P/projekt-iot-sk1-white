@@ -2,7 +2,6 @@ const MCUService = require('../models/MCU/MCUService');
 
 const addMCU = (req, res) => {
   try {
-    console.log("přidávám MCU")
     const newMCU = MCUService.createMCU(req.body);
     res.status(201).json({
         success: true,
