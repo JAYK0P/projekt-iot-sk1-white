@@ -4,7 +4,7 @@
     const mcuModal = Modal.register('MCU');
     
     if(mcuModal){
-        const {openModal, submitBtn, closeBtn, cancelBtn, showError, hideError } = mcuModal;
+        const {openModal, submitBtn, showError, hideError } = mcuModal;
         
         // akce pro zobrazování
         if(mcuModal.openModal){
