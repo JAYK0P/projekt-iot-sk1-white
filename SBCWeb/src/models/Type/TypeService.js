@@ -27,7 +27,9 @@ class TypeService{
     }
 
     
-
+    static getAllTypes(){
+        return TypeRepository.findAll();
+    }
 
 }
 

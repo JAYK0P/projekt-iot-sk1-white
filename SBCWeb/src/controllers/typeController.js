@@ -21,7 +21,7 @@ const getAllTypes = (req,res) =>{
     try {
         const types = TypeService.getAllTypes();
         res.json({
-            data: types
+            result: types
         });
     } catch (error) {
         res.status(400).json({ message: error.message });

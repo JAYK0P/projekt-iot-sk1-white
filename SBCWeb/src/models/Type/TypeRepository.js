@@ -36,7 +36,7 @@ class TypeRepository{
             SELECT * FROM types
         `
         const stmt = db.prepare(query);
-        const rows = stmt.run;
+        const rows = stmt.all();
 
         return rows.map(r => new Type(r));
     }
