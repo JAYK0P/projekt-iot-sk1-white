@@ -1,18 +1,19 @@
 <!-- Modal pro přidání nového typu MCU (IDs sjednoceny s Modal.register('Type')) -->
 <div id="TypeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
   <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
-    <h2 class="text-lg font-bold mb-4">Přidat nový typ MCU</h2>
+    <h2 class="text-lg font-bold mb-4"><span id="TypeModalTitle">Přidat nový typ MCU</span></h2>
     <form id="TypeForm">
       <div id="TypeError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
         <p class="text-sm font-medium"></p>
       </div>
       <div class="mb-4">
         <label for="newTypeName" class="block text-sm font-medium text-gray-700 mb-1">Název typu</label>
+        <input type="hidden" id="typeId" name="typeId" value="">
         <input type="text" id="typeName" name="newTypeName" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-vintage-grape-500" required>
       </div>
       <div class="flex justify-end space-x-2">
         <button type="button" id="TypeCancel" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">Zrušit</button>
-        <button type="submit" id="TypeSubmit" class="px-4 py-2 rounded-lg bg-vintage-grape-600 text-white hover:bg-vintage-grape-700">Přidat</button>
+        <button type="submit" id="TypeSubmit" class="px-4 py-2 rounded-lg bg-vintage-grape-600 text-white hover:bg-vintage-grape-700"><span id="TypeSubmitLabel">Přidat</span></button>
       </div>
     </form>
   </div>

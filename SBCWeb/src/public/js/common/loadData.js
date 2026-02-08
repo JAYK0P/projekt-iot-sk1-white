@@ -49,3 +49,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.warn('Žádná data nebyla načtena.');
   }
 });
+
+// expose to other scripts (mcus.js uses these)
+window.fetchData = fetchData;
+window.populateSelector = populateSelector;
