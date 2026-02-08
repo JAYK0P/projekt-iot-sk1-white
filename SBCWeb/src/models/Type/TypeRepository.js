@@ -10,19 +10,12 @@ class TypeRepository{
         `;
         
         const stmt = db.prepare(query);
-        // ...existing code...
-        const value = data.type ?? data.name;
-        if (!value) {
-            throw new Error('TypeRepository.create: no value to insert (data.type/data.name missing)');
-        }
 
-        try {
-            const result = stmt.run(value);
-            return result;
-        } catch (error) {
-            console.error('TypeRepository.create SQL error:', error && (error.stack || error), { query, value });
-            throw error;
-        }
+        const value = data.type;
+        
+        const result = stmt.run(value);
+        return result;
+        
     }
 
     static findById(id){
@@ -46,6 +39,13 @@ class TypeRepository{
         const rows = stmt.run;
 
         return rows.map(r => new Type(r));
+    }
+
+    static findByName(name){
+        const query = `SELECT * FROM types WHERE type = ?`;
+        const row = db.prepare(query).get(name);
+
+        return row ? new Type(row) : null
     }
 
 }
