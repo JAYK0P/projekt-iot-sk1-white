@@ -3,7 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const toast = document.getElementById("toast");
     const toastMsg = document.getElementById("toast-message");
-    
+    window.toast = toast;
+    window.toastMsg = toastMsg;
+
+
         let toastTimeout;
 
     function openToast(message) {

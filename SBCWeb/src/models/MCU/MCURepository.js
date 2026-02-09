@@ -4,7 +4,7 @@ const MCU = require('./MCU');
 class MCURepository{
     static create(mcuData) {
         const query = `
-            INSERT INTO mcus (name, type, ip_address, mac_address, location, description, api_key)
+            INSERT INTO mcus (name, type_id, ip_address, mac_address, location, description, api_key)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
         

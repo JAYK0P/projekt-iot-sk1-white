@@ -21,7 +21,7 @@
 
                 const formData = {
                     name: document.getElementById('mcuName').value,
-                    type: document.getElementById('mcuType').value,
+                    type: document.getElementById('TypeSelectorMCUForm').value,
                     ipAddress: document.getElementById('mcuIP').value,
                     macAddress: document.getElementById('mcuMAC').value,
                     location: document.getElementById('mcuLocation').value,
