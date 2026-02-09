@@ -15,8 +15,8 @@ async function fetchData(url) {
   }
 }
 
-function populateSelector(typesArray) {
-  const selectElement = document.getElementById('typeSelector');
+function populateSelector(selecotrId,typesArray) {
+  const selectElement = document.getElementById(selecotrId);
   if (!selectElement) return;
 
   selectElement.innerHTML = '';
@@ -42,14 +42,11 @@ function populateSelector(typesArray) {
 
 document.addEventListener('DOMContentLoaded', async function() {
   const result = await fetchData('/type/types');
-  
+  console.log(result);
   if (result) {
-    populateSelector(result);
+    populateSelector("TypeSelectorSearchBar",result);
+    populateSelector("TypeSelectorMCUForm",result);
   } else {
     console.warn('Žádná data nebyla načtena.');
   }
 });
-
-// expose to other scripts (mcus.js uses these)
-window.fetchData = fetchData;
-window.populateSelector = populateSelector;

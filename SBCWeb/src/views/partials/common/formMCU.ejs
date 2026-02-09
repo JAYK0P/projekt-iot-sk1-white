@@ -36,13 +36,9 @@
                         <label for="mcuType" class="flex items-center gap-2 text-sm font-medium text-midnight-violet-900">
                             Type <span class="text-red-500">*</span>
                         </label>
-                        <select id="mcuType" name="type" required 
+                        <select id="TypeSelectorMCUForm" name="type" required 
                             class="w-full px-4 py-3 bg-ash-grey-100 border border-ash-grey-300 rounded-lg text-gray-900 focus:outline-none focus:border-vintage-grape-500 transition-all appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_1rem_center] bg-no-repeat">
-                            <option value="">Select type...</option>
-                            <option value="ESP32">ESP32</option>
-                            <option value="ESP8266">ESP8266</option>
-                            <option value="Arduino">Arduino</option>
-                            <option value="Raspberry Pi">Raspberry Pi</option>
+                            <option value="" disabled selected>Select type</option>
                         </select>
                     </div>
 
