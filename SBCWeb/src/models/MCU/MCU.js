@@ -7,6 +7,7 @@ class MCU {
     this.macAddress = data.mac_address || data.macAddress;
     this.description = data.description;
     this.location = data.location || null;
+    this.lastSeen = data.last_seen || data.lastSeen;
     this.apiKey = data.api_key || data.apiKey || null;
   }
 
@@ -19,7 +20,8 @@ class MCU {
       mac_address: this.macAddress,
       location: this.location,
       description: this.description,
-      api_key: this.apiKey
+      api_key: this.apiKey,
+      last_seen: this.lastSeen
     };
   }
 
@@ -33,7 +35,8 @@ class MCU {
       macAddress: this.macAddress,
       location: this.location,
       description: this.description,
-      apiKey: this.apiKey
+      apiKey: this.apiKey,
+      lastSeen: this.lastSeen
     };
   }
 
