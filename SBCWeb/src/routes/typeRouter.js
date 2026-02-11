@@ -6,4 +6,6 @@ router.post('/add', typeController.createType)
 
 router.get('/types', typeController.getAllTypes);
 
+router.post('/delete', typeController.deleteType)
+
 module.exports = router;

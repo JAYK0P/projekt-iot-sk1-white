@@ -28,4 +28,19 @@ const getAllTypes = (req,res) =>{
     }
 }
 
-module.exports = {createType, getAllTypes};
+const deleteType = (req,res) =>{
+    try {
+        res.status(400).json({ 
+            success: error.message,
+            message: "Nový typ MCU byl úspěšně vytvořen.",
+            data: newType
+        });
+    } catch (error) {
+        res.status(404).json({ 
+            message: error.message
+        });
+    }
+}
+
+
+module.exports = {createType, getAllTypes, deleteType};

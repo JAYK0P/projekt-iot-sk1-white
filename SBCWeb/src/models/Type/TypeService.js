@@ -26,9 +26,26 @@ class TypeService{
         return type;
     }
 
-    
+    static getType(id){
+        if(!id){
+            throw new Error('Id je nutné pro smazání controlleru.')
+        }
+        return TypeRepository.find(id);
+    }
+
     static getAllTypes(){
         return TypeRepository.findAll();
+    }
+
+    static deleteType(id){
+        if(!id){
+            throw new Error('Id je nutné pro smazání controlleru.')
+        }
+        const type = TypeRepository.find(id);
+        if(!type){
+            throw new Error('Typ nebyl nalezen.')
+        }
+        return TypeRepository.delete(id);
     }
 
 }

@@ -18,7 +18,7 @@ class TypeRepository{
         
     }
 
-    static findById(id){
+    static find(id){
         const query = `
             SELECT * FROM types WHERE id = ?
         `
@@ -46,6 +46,18 @@ class TypeRepository{
         const row = db.prepare(query).get(name);
 
         return row ? new Type(row) : null
+    }
+
+    static delete(id) {
+    const query = `DELETE FROM types WHERE id = ?`;
+    
+    const result = db.prepare(query).run(id);
+
+    if (result.changes === 0) {
+        return false; 
+    }
+
+    return true; 
     }
 
 }
