@@ -172,3 +172,15 @@ if (typeModal) {
         });
     }
 }
+
+/* ============================================================
+    4. Sidebar
+   ============================================================ */
+
+const refreshAll = document.getElementById('refreshAll');
+
+refreshAll.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.refreshMCUs();
+            window.refreshTypes();
+        });
