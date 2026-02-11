@@ -171,6 +171,9 @@ function populateTypeList(typesArray) {
 window.refreshTypes = async () => {
     const types = await fetchData('/type/types');
     populateTypeList(types); // zavolání naší nové funkce
+    const dedupedTypes = dedupeTypes(types);
+    populateSelector("TypeSelectorSearchBar",dedupedTypes);
+    populateSelector("TypeSelectorMCUForm",dedupedTypes);
 };
 
 

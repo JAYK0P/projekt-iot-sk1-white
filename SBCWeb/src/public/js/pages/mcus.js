@@ -180,7 +180,7 @@ if (typeModal) {
 const refreshAll = document.getElementById('refreshAll');
 
 refreshAll.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.refreshMCUs();
-            window.refreshTypes();
-        });
+    e.preventDefault();
+    window.refreshMCUs();
+    window.refreshTypes();
+});
