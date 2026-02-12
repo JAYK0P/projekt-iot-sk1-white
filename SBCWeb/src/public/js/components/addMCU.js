@@ -44,11 +44,10 @@
                         // Úspěch - zobraz zprávu a zavři modal
                         window.refreshMCUs();
 
-                        if(toast && toastMsg){
-                            openToast(data.message);
-                        }
-                        else{
-                            showError("nebylo možné zobrazit alert");
+                        try {
+                            window.openToast("Zařízení bylo úspěšně přidáno!", true);
+                        } catch (error) {
+                            window.openToast("Chyba při ukládání: " + error.message, false);
                         }
                         mcuModal.close();
                         submitBtn.disabled = false;

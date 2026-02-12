@@ -256,7 +256,6 @@ editModal.submitBtn.addEventListener("click", async () =>{
 
 /**
  * GLOBÁLNÍ STAV FILTRŮ
- * Ukládáme si, co má uživatel zrovna vybráno.
  */
 window.currentFilters = {
     type: 'all',   // ID typu z DB nebo 'all'
@@ -265,25 +264,20 @@ window.currentFilters = {
 
 /**
  * 1. POUŽITÍ FILTRŮ (Apply Filters)
- * Prochází všechny karty a schovává ty, které nesplňují VŠECHNA kritéria.
  */
 function applyFilters() {
     const cards = document.querySelectorAll('.mcu-card');
     
     cards.forEach(card => {
-        // Data z karty (nastavená v renderMCUGrid)
         const typeId = card.dataset.type; 
-        // Online stav poznáme podle přítomnosti zelené barvy indikátoru
         const isOnline = card.querySelector('.bg-green-400') !== null;
 
-        // Logika "AND": Musí odpovídat typu I statusu
         const matchesType = window.currentFilters.type === 'all' || typeId === String(window.currentFilters.type);
         
         let matchesStatus = true;
         if (window.currentFilters.status === 'online') matchesStatus = isOnline;
         if (window.currentFilters.status === 'offline') matchesStatus = !isOnline;
 
-        // Přidání/odebrání třídy hidden
         card.classList.toggle('hidden', !(matchesType && matchesStatus));
     });
 }
@@ -340,7 +334,6 @@ async function refreshTypeStats() {
             return acc;
         }, {});
 
-        // Speciální řádek "Všechny typy"
         const isAllActive = window.currentFilters.type === 'all' ? 'bg-midnight-violet-800 text-white active' : '';
         let html = `
             <button class="type-filter w-full flex items-center justify-between px-1 py-1.5 rounded-lg text-ash-grey-400 hover:bg-midnight-violet-800 hover:text-white transition group ${isAllActive}" 
@@ -357,7 +350,6 @@ async function refreshTypeStats() {
             </button>
         `;
 
-        // Generování pouze aktivních typů (> 0)
         html += types
             .filter(t => (counts[t.id] || 0) > 0)
             .map(t => {
@@ -389,7 +381,6 @@ async function refreshTypeStats() {
  * 4. PŘIPOJENÍ EVENT LISTENERŮ
  */
 function attachFilterListeners() {
-    // Sekce Typy (dynamická)
     document.querySelectorAll('.type-filter').forEach(btn => {
         btn.onclick = () => {
             window.currentFilters.type = btn.dataset.typeId;
@@ -398,7 +389,6 @@ function attachFilterListeners() {
         };
     });
 
-    // Sekce Rychlé filtry (statická)
     document.querySelectorAll('.quick-filter').forEach(btn => {
         btn.onclick = () => {
             window.currentFilters.status = btn.dataset.filter;
@@ -431,20 +421,18 @@ if (refreshAll) {
         refreshAll.classList.add('opacity-50', 'pointer-events-none');
 
         try {
-            // Resetujeme filtry na výchozí stav při tvrdém refreshy (volitelné)
-            // window.currentFilters = { type: 'all', status: 'all' };
+            
 
             await Promise.all([
-                window.refreshMCUs(),      // Načte grid
-                window.refreshTypes(),     // Načte číselník typů (pokud máš)
-                refreshSidebarStats(),     // Počty online/offline
-                refreshTypeStats()         // Generování sidebaru a počty typů
+                window.refreshMCUs(),      
+                window.refreshTypes(),     
+                refreshSidebarStats(),     
+                refreshTypeStats()         
             ]);
             
             refreshAll.classList.add('text-green-500');
             setTimeout(() => {
                 refreshAll.classList.remove('text-green-500');
-                // Po znovunačtení gridu aplikujeme aktuální filtry
                 applyFilters();
             }, 500);
         } catch (error) {
@@ -456,6 +444,5 @@ if (refreshAll) {
     });
 }
 
-// Inicializace při startu
 refreshSidebarStats();
 refreshTypeStats();
