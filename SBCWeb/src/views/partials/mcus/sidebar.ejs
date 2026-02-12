@@ -49,12 +49,22 @@
 
         <!-- Filter by Type -->
         <div>
-          <h3 class="text-xs font-semibold text-ash-grey-400 uppercase tracking-wider mb-3 sidebar-text">
+          <div class="flex items-center justify-between mb-3 pr-2">
+            <h3 class="text-xs font-semibold text-ash-grey-400 uppercase tracking-wider sidebar-text">
               Podle typu
-          </h3>
-          <div id="dynamicTypeFilters" class="space-y-1">
+            </h3>
             
+            <button id="TypeOpen" type="button" 
+                    class="p-1.5 text-ash-grey-400 hover:text-vintage-grape-600 hover:bg-ash-grey-100 rounded-md transition-colors" 
+                    title="Spravovat typy">
+              <i class="fas fa-cog text-[14px]"></i>
+            </button>
           </div>
+
+          <div id="dynamicTypeFilters" class="space-y-1">
+          
+          </div>
+        </div>
 
         <!-- Quick Actions -->
         <div>

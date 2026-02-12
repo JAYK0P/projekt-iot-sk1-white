@@ -1,3 +1,14 @@
+/**
+ * GLOBÁLNÍ STAV FILTRŮ
+ */
+window.currentFilters = {
+    type: 'all',   // ID typu z DB nebo 'all'
+    status: 'all',  // 'all', 'online', 'offline'
+    search: ''
+};
+
+
+
 /* ============================================================
     1. SMAZÁNÍ MCU (deletemcu)
    ============================================================ */
@@ -263,31 +274,30 @@ editModal.submitBtn.addEventListener("click", async () =>{
     5. Sidebar
    ============================================================ */
 
-/**
- * GLOBÁLNÍ STAV FILTRŮ
- */
-window.currentFilters = {
-    type: 'all',   // ID typu z DB nebo 'all'
-    status: 'all'  // 'all', 'online', 'offline'
-};
+
 
 /**
  * 1. POUŽITÍ FILTRŮ (Apply Filters)
  */
 function applyFilters() {
     const cards = document.querySelectorAll('.mcu-card');
+    const searchTerm = window.currentFilters.search.toLowerCase();
     
     cards.forEach(card => {
-        const typeId = card.dataset.type; 
+        const typeId = card.dataset.type;
+        const name = card.querySelector('h3').textContent.toLowerCase();
+        const ip = card.querySelector('.font-mono').textContent.toLowerCase();
         const isOnline = card.querySelector('.bg-green-400') !== null;
 
+        const matchesSearch = name.includes(searchTerm) || ip.includes(searchTerm);
+
         const matchesType = window.currentFilters.type === 'all' || typeId === String(window.currentFilters.type);
-        
+
         let matchesStatus = true;
         if (window.currentFilters.status === 'online') matchesStatus = isOnline;
         if (window.currentFilters.status === 'offline') matchesStatus = !isOnline;
 
-        card.classList.toggle('hidden', !(matchesType && matchesStatus));
+        card.classList.toggle('hidden', !(matchesSearch && matchesType && matchesStatus));
     });
 }
 
@@ -455,3 +465,30 @@ if (refreshAll) {
 
 refreshSidebarStats();
 refreshTypeStats();
+
+
+/* ============================================================
+    6. Searchbar (Upravený pro čistě textové hledání)
+   ============================================================ */
+
+function initSearchBar() {
+    const searchInput = document.getElementById('searchMCU');
+    
+    // Pokud searchbar na stránce není, skončíme, aby to neházelo chyby
+    if (!searchInput) return;
+
+    // Textové vyhledávání (reaguje okamžitě na psaní)
+    searchInput.addEventListener('input', (e) => {
+        // Uložíme hledaný text do globálního filtru
+        window.currentFilters.search = e.target.value;
+        // Spustíme filtrování
+        applyFilters();
+    });
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    refreshSidebarStats();
+    refreshTypeStats();
+    initSearchBar(); 
+});
