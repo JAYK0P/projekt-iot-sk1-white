@@ -105,10 +105,8 @@ function renderMCUGrid(mcusArray) {
     // 2. Barvy 
     if (diffMins < 10) {
       timeColorClass = 'text-green-600';
-      iconColorClass = 'text-green-400';
     } else {
       timeColorClass = 'text-red-500';
-      iconColorClass = 'text-red-400';
     }
 
     const statusColor = diffMins < 10 ? 'bg-green-400' : 'bg-red-400';

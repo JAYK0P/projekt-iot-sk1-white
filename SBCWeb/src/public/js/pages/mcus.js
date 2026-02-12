@@ -256,18 +256,38 @@ editModal.submitBtn.addEventListener("click", async () =>{
 
 const refreshAll = document.getElementById('refreshAll');
 
-refreshAll.addEventListener('click', (e) => {
+refreshAll.addEventListener('click', async (e) => {
     e.preventDefault();
-    window.refreshMCUs();
-    window.refreshTypes();
+
+    const icon = refreshAll.querySelector('i');
+    
+    if (icon) icon.classList.add('fa-spin');
+    refreshAll.classList.add('opacity-50', 'pointer-events-none');
+
+    try {
+
+        await Promise.all([
+            window.refreshMCUs(),
+            window.refreshTypes(),
+            window.refreshSidebarStats()
+        ]);
+        
+        refreshAll.classList.add('text-green-500');
+        setTimeout(() => refreshAll.classList.remove('text-green-500'), 500);
+
+    } catch (error) {
+        console.error("Chyba při celkovém refreshy:", error);
+    } finally {
+        if (icon) icon.classList.remove('fa-spin');
+        refreshAll.classList.remove('opacity-50', 'pointer-events-none');
+    }
 });
 
-async function getMcuStats() {
+async function getMcuStatus() {
     try {
         const mcus = await fetchData('/mcu/mcus');
         if (!mcus || !Array.isArray(mcus)) return { online: 0, offline: 0, total: 0 };
 
-        // Získáme aktuální čas v milisekundách (vždy UTC)
         const now = Date.now(); 
         const tenMinutesInMs = 10 * 60 * 1000;
 
@@ -302,4 +322,138 @@ async function getMcuStats() {
     }
 }
 
-console.log(getMcuStats());
+
+
+async function refreshTypeStats() {
+    const container = document.getElementById('dynamicTypeFilters');
+    if (!container) return;
+
+    try {
+        const [types, mcus] = await Promise.all([
+            fetchData('/type/types'),
+            fetchData('/mcu/mcus')
+        ]);
+
+        if (!types || !mcus) return;
+
+        // 1. Spočítáme výskyty MCU podle jejich type ID
+        const counts = mcus.reduce((acc, mcu) => {
+            acc[mcu.type] = (acc[mcu.type] || 0) + 1;
+            return acc;
+        }, {});
+
+        // 2. Základní HTML s "Všechny typy" (vždy viditelné)
+        let html = `
+            <button class="type-filter w-full flex items-center justify-between px-1 py-1.5 rounded-lg text-ash-grey-400 hover:bg-midnight-violet-800 hover:text-white transition group" 
+                data-type-id="all">
+                <div class="flex items-center space-x-2.5 overflow-hidden flex-1">
+                    <i class="fas fa-layer-group text-[10px] text-vintage-grape-400 group-hover:text-vintage-grape-300 flex-shrink-0"></i>
+                    <span class="sidebar-text text-[14px] whitespace-nowrap overflow-hidden text-ellipsis flex-1 text-left">
+                        Všechny typy
+                    </span>
+                </div>
+                <span class="text-[12px] bg-midnight-violet-700 text-ash-grey-300 px-2 py-0.5 rounded-md min-w-[22px] text-center ml-4">
+                    ${mcus.length}
+                </span>
+            </button>
+        `;
+
+        // 3. Přidáme jen ty typy, které mají count > 0
+        html += types
+            .filter(t => (counts[t.id] || 0) > 0)
+            .map(t => `
+                <button class="type-filter w-full flex items-center justify-between px-1 py-1.5 rounded-lg text-ash-grey-400 hover:bg-midnight-violet-800 hover:text-white transition group" 
+                    data-type-id="${t.id}">
+                    <div class="flex items-center space-x-2.5 overflow-hidden flex-1">
+                        <i class="fas fa-microchip text-[10px] text-vintage-grape-400 group-hover:text-vintage-grape-300 flex-shrink-0"></i>
+                        <span class="sidebar-text text-[14px] whitespace-nowrap overflow-hidden text-ellipsis flex-1 text-left">
+                            ${t.type}
+                        </span>
+                    </div>
+                    <span class="text-[12px] bg-midnight-violet-700 text-ash-grey-300 px-2 py-0.5 rounded-md min-w-[22px] text-center ml-4">
+                        ${counts[t.id]}
+                    </span>
+                </button>
+            `).join('');
+
+        container.innerHTML = html;
+
+        // Aktivujeme logiku klikání
+        attachFilterListeners();
+
+    } catch (error) {
+        console.error("Chyba při generování sidebaru:", error);
+    }
+}
+
+
+
+    function attachFilterListeners() {
+    document.querySelectorAll('.type-filter').forEach(btn => {
+        btn.onclick = () => {
+            const typeId = btn.dataset.typeId;
+            setActiveStyle(btn);
+            
+            if (typeId === 'all') {
+                filterMCUGrid('all');
+            } else {
+                filterMCUGrid('type', typeId);
+            }
+        };
+    });
+    
+
+    document.querySelectorAll('.quick-filter').forEach(btn => {
+        btn.onclick = () => {
+            const val = btn.dataset.filter;
+            setActiveStyle(btn);
+            filterMCUGrid(val === 'all' ? 'all' : 'status', val);
+        };
+    });
+}
+
+function filterMCUGrid(criteria, value) {
+    const cards = document.querySelectorAll('.mcu-card');
+    
+    cards.forEach(card => {
+        if (criteria === 'all') {
+            card.classList.remove('hidden');
+            return;
+        }
+
+        let show = false;
+        if (criteria === 'type') {
+            show = card.dataset.type === String(value);
+        } else if (criteria === 'status') {
+            const isOnline = card.querySelector('.bg-green-400') !== null;
+            show = (value === 'online' ? isOnline : !isOnline);
+        }
+        
+        card.classList.toggle('hidden', !show);
+    });
+}
+
+function setActiveStyle(activeBtn) {
+    document.querySelectorAll('.type-filter, .quick-filter').forEach(b => 
+        b.classList.remove('bg-midnight-violet-800', 'text-white', 'active')
+    );
+    activeBtn.classList.add('bg-midnight-violet-800', 'text-white', 'active');
+}
+
+
+
+
+async function refreshSidebarStats() {
+    const stats = await getMcuStatus();
+    
+    const elAll = document.getElementById('countAll');
+    const elOnline = document.getElementById('countOnline');
+    const elOffline = document.getElementById('countOffline');
+
+    if (elAll) elAll.textContent = stats.total;
+    if (elOnline) elOnline.textContent = stats.online;
+    if (elOffline) elOffline.textContent = stats.offline;
+}
+
+refreshSidebarStats();
+refreshTypeStats();

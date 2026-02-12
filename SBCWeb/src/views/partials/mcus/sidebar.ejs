@@ -49,38 +49,12 @@
 
         <!-- Filter by Type -->
         <div>
-          <h3 class="text-xs font-semibold text-ash-grey-400 uppercase tracking-wider mb-3 sidebar-text">Podle typu</h3>
-          <div class="space-y-1">
-            <button class="type-filter w-full flex items-center justify-between px-4 py-2 rounded-lg text-ash-grey-300 hover:bg-midnight-violet-800 transition" data-type="ESP32">
-              <div class="flex items-center space-x-3 overflow-hidden">
-                <i class="fas fa-microchip w-4 text-vintage-grape-400 flex-shrink-0"></i>
-                <span class="sidebar-text whitespace-nowrap">ESP32</span>
-              </div>
-              <span class="text-xs bg-midnight-violet-700 px-2 py-0.5 rounded-full" id="countESP32">0</span>
-            </button>
-            <button class="type-filter w-full flex items-center justify-between px-4 py-2 rounded-lg text-ash-grey-300 hover:bg-midnight-violet-800 transition" data-type="ESP8266">
-              <div class="flex items-center space-x-3 overflow-hidden">
-                <i class="fas fa-microchip w-4 text-vintage-grape-400 flex-shrink-0"></i>
-                <span class="sidebar-text whitespace-nowrap">ESP8266</span>
-              </div>
-              <span class="text-xs bg-midnight-violet-700 px-2 py-0.5 rounded-full" id="countESP8266">0</span>
-            </button>
-            <button class="type-filter w-full flex items-center justify-between px-4 py-2 rounded-lg text-ash-grey-300 hover:bg-midnight-violet-800 transition" data-type="Arduino">
-              <div class="flex items-center space-x-3 overflow-hidden">
-                <i class="fas fa-microchip w-4 text-vintage-grape-400 flex-shrink-0"></i>
-                <span class="sidebar-text whitespace-nowrap">Arduino</span>
-              </div>
-              <span class="text-xs bg-midnight-violet-700 px-2 py-0.5 rounded-full" id="countArduino">0</span>
-            </button>
-            <button class="type-filter w-full flex items-center justify-between px-4 py-2 rounded-lg text-ash-grey-300 hover:bg-midnight-violet-800 transition" data-type="Raspberry Pi">
-              <div class="flex items-center space-x-3 overflow-hidden">
-                <i class="fas fa-microchip w-4 text-vintage-grape-400 flex-shrink-0"></i>
-                <span class="sidebar-text whitespace-nowrap">Raspberry Pi</span>
-              </div>
-              <span class="text-xs bg-midnight-violet-700 px-2 py-0.5 rounded-full" id="countRaspberry">0</span>
-            </button>
+          <h3 class="text-xs font-semibold text-ash-grey-400 uppercase tracking-wider mb-3 sidebar-text">
+              Podle typu
+          </h3>
+          <div id="dynamicTypeFilters" class="space-y-1">
+            
           </div>
-        </div>
 
         <!-- Quick Actions -->
         <div>
