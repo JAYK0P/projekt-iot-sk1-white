@@ -19,7 +19,10 @@ class MCUService {
 
         this.checkMAC(macAddress);
 
-        
+        if(!MCURepository.uniqueMac(macAddress)){
+            throw new Error('MAC adresa musí být unikátní.');
+        }
+
         const mcu = new MCU({
             name: data.name,
             type: data.type,

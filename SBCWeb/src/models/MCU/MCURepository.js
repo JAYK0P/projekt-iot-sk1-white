@@ -21,6 +21,16 @@ class MCURepository{
         
         return result.lastInsertRowid;
     }
+    
+    static uniqueMac(mac){
+        const query = `SELECT * FROM mcus WHERE mac_address=?`
+        const row = db.prepare(query).get(mac);
+        if(row){
+            return false;
+        }
+        return true;
+    }
+
 
     static findById(id){
         const query = `SELECT * FROM mcus WHERE device_id=?`
