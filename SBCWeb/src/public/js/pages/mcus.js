@@ -184,3 +184,46 @@ refreshAll.addEventListener('click', (e) => {
     window.refreshMCUs();
     window.refreshTypes();
 });
+
+async function getMcuStats() {
+    try {
+        const mcus = await fetchData('/mcu/mcus');
+        if (!mcus || !Array.isArray(mcus)) return { online: 0, offline: 0, total: 0 };
+
+        // Získáme aktuální čas v milisekundách (vždy UTC)
+        const now = Date.now(); 
+        const tenMinutesInMs = 10 * 60 * 1000;
+
+        let onlineCount = 0;
+        let offlineCount = 0;
+
+        mcus.forEach(mcu => {
+
+            const lastSeenDate = new Date(mcu.lastSeen + (mcu.lastSeen.includes('Z') ? '' : 'Z'));
+            const lastSeenTime = lastSeenDate.getTime();
+
+            const timeDifference = now - lastSeenTime;
+
+
+
+            if (timeDifference > 0 && timeDifference < tenMinutesInMs) {
+                onlineCount++;
+            } else {
+                offlineCount++;
+            }
+        });
+
+        return {
+            online: onlineCount,
+            offline: offlineCount,
+            total: mcus.length
+        };
+
+    } catch (error) {
+        console.error("Chyba při výpočtu statistik:", error);
+        return { online: 0, offline: 0, total: 0 };
+    }
+}
+
+
+console.log(getMcuStats());

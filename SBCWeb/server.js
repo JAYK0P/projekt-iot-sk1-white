@@ -6,7 +6,9 @@ const PORT = 3000;
 
 const db = require('./src/models/database');
 const initDB = require('./src/models/initDatabase');
+const seedDB = require('./src/models/seedDatabase');
 initDB();
+seedDB();
 
 // Middleware
 app.use(express.json());
