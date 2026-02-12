@@ -50,6 +50,18 @@ const Modal = {
             }
         };
 
+        const clear = () =>{
+            if(form){
+                form.reset();
+                hideError();
+            } else {
+                const inputs = modal.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    input.value = '';
+                });
+                hideError();
+            }
+        }
 
         const showError = (message) => {
             if(errorText){
@@ -87,7 +99,7 @@ const Modal = {
             }
         });
 
-        return { open, close, modal, form, submitBtn, cancelBtn, openModal, closeBtn, showError, hideError};
+        return { open,clear, close, modal, form, submitBtn, cancelBtn, openModal, closeBtn, showError, hideError};
     }
 }
 

@@ -49,7 +49,7 @@
                         } catch (error) {
                             window.openToast("Chyba při ukládání: " + error.message, false);
                         }
-                        mcuModal.close();
+                        mcuModal.clear();
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add MCU';
                     } else {

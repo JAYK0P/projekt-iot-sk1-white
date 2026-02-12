@@ -108,7 +108,7 @@ if (deleteTypeModal) {
                 if (data.success) {
                     await window.refreshTypes();
                     deleteTypeModal.close();
-                    typeModal.close();
+                    
                         
                     try {
                         window.openToast(data.message, true);
@@ -169,7 +169,7 @@ if (typeModal) {
                     } catch (error) {
                         window.openToast("Chyba při ukládání: " + error.message, false);
                     }
-                    typeModal.close();
+                    typeModal.clear();
                     
                     const result = await fetchData('/type/types');
                     if (result) {
