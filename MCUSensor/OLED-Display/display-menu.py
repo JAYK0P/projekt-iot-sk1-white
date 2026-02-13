@@ -4,6 +4,10 @@ import time
 import dht
 import machine
 import math
+import network
+import ubinascii
+import json
+from umqtt.simple import MQTTClient
 
 # --- NASTAVENÍ PINŮ ---
 # I2C pro OLED
@@ -24,6 +28,14 @@ sw = Pin(SW_PIN, Pin.IN, Pin.PULL_UP)
 # Senzor teploty (shodné s MQTTsensors.py)
 dht_sensor = dht.DHT11(Pin(14))
 
+# --- SÍŤOVÉ NASTAVENÍ ---
+WIFI_SSID = "JmenoTveWifi"
+WIFI_PASS = "HesloTveWifi"
+MQTT_BROKER = "192.168.1.100" # IP adresa tvého Raspberry Pi (Brokeru)
+MQTT_TOPIC = "sensor/data"
+
+mqtt_client = None
+
 # --- DEFINICE MENU ---
 menu_items = [
     {"label": "Mereni Teploty", "visible": True},
@@ -38,6 +50,7 @@ menu_items = [
 current_brightness = 255 # Výchozí jas (0-255)
 edit_mode = False
 current_index = 0
+remote_data = {"temp": "--", "hum": "--"} # Uložiště pro data z MCU2
 scroll_delta = 0
 button_pressed = False
 
@@ -71,6 +84,48 @@ def handle_button(pin):
         button_pressed = True
 
 sw.irq(trigger=Pin.IRQ_FALLING, handler=handle_button)
+
+# --- SÍŤOVÉ FUNKCE ---
+def connect_wifi():
+    wlan = network.WLAN(network.STA_IF)
+    wlan.active(True)
+    if not wlan.isconnected():
+        oled.fill(0)
+        oled.text("Pripojuji WiFi...", 0, 30, 1)
+        oled.show()
+        wlan.connect(WIFI_SSID, WIFI_PASS)
+        retry = 0
+        while not wlan.isconnected() and retry < 10:
+            time.sleep(1)
+            retry += 1
+    return wlan.isconnected()
+
+def mqtt_callback(topic, msg):
+    """Tato funkce se spustí automaticky, když přijde zpráva"""
+    global remote_data
+    print(f"Prisla zprava: {msg}")
+    try:
+        # Předpokládáme JSON formát: {"temp": 25, "hum": 50, ...}
+        data = json.loads(msg)
+        remote_data['temp'] = data.get('temp', '--')
+        remote_data['hum'] = data.get('hum', '--')
+    except Exception as e:
+        print("Chyba parsovani MQTT:", e)
+
+def connect_mqtt():
+    global mqtt_client
+    try:
+        client_id = ubinascii.hexlify(machine.unique_id())
+        client = MQTTClient(client_id, MQTT_BROKER)
+        client.set_callback(mqtt_callback)
+        client.connect()
+        client.subscribe(MQTT_TOPIC)
+        print(f"Pripojeno k MQTT, odebírám: {MQTT_TOPIC}")
+        return client
+    except Exception as e:
+        print("Chyba MQTT pripojeni:", e)
+        return None
+
 
 # --- VYKRESLOVÁNÍ ---
 def draw_menu():
@@ -164,6 +219,23 @@ def show_local_temp():
         oled.show()
         time.sleep(2)
 
+def show_remote_data():
+    """Zobrazí data přijatá přes MQTT z druhého MCU"""
+    while True:
+        oled.fill(0)
+        oled.text("DATA Z MCU2:", 0, 0, 1)
+        oled.text(f"Teplota: {remote_data['temp']} C", 0, 20, 1)
+        oled.text(f"Vlhkost: {remote_data['hum']} %", 0, 35, 1)
+        oled.text("< Zpet tlacitkem", 0, 55, 1)
+        oled.show()
+        
+        # Čekání na stisk tlačítka pro návrat
+        if sw.value() == 0:
+            while sw.value() == 0: time.sleep_ms(10)
+            break
+        
+        time.sleep_ms(100)
+
 def adjust_brightness():
     """Obrazovka pro nastavení jasu s grafickým ukazatelem"""
     global scroll_delta, current_brightness
@@ -224,6 +296,9 @@ def perform_action(item_name):
     if item_name == "Mereni Teploty":
         show_local_temp()
         
+    elif item_name == "Data z MCU2":
+        show_remote_data()
+        
     elif item_name == "Jas Displeje":
         adjust_brightness()
         
@@ -243,9 +318,23 @@ def perform_action(item_name):
         time.sleep(1) 
 
 # --- HLAVNÍ SMYČKA ---
+# 1. Inicializace sítě (pokus o připojení při startu)
+if connect_wifi():
+    mqtt_client = connect_mqtt()
+else:
+    print("WiFi se nepodarilo pripojit - bezim offline")
+
 draw_menu() # Prvotní vykreslení
 
 while True:
+    # 0. Kontrola MQTT zpráv (pokud jsme online)
+    if mqtt_client:
+        try:
+            mqtt_client.check_msg() # Zkontroluje, zda nepřišla nová data
+        except OSError:
+            print("MQTT vypadlo, zkusim reconnect...")
+            mqtt_client = connect_mqtt()
+
     # 1. Zpracování pohybu enkodéru
     if scroll_delta != 0:
         # Zjistíme délku aktuálního seznamu
