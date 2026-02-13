@@ -3,6 +3,7 @@ import ssd1306
 import time
 import dht
 import machine
+import math
 
 # --- NASTAVENÍ PINŮ ---
 # I2C pro OLED
@@ -34,6 +35,7 @@ menu_items = [
     {"label": "Vypnout", "visible": True}
 ]
 
+current_brightness = 255 # Výchozí jas (0-255)
 edit_mode = False
 current_index = 0
 scroll_delta = 0
@@ -162,10 +164,68 @@ def show_local_temp():
         oled.show()
         time.sleep(2)
 
+def adjust_brightness():
+    """Obrazovka pro nastavení jasu s grafickým ukazatelem"""
+    global scroll_delta, current_brightness
+    
+    # Reset delta před vstupem
+    scroll_delta = 0
+    
+    while True:
+        # 1. Zpracování enkodéru
+        if scroll_delta != 0:
+            # Změna jasu po větších krocích (např. 15)
+            current_brightness += scroll_delta * 15
+            
+            # Omezení rozsahu 0-255
+            if current_brightness > 255: current_brightness = 255
+            if current_brightness < 0: current_brightness = 0
+            
+            # Aplikace jasu na hardware
+            oled.contrast(current_brightness)
+            scroll_delta = 0
+
+        # 2. Vykreslení
+        oled.fill(0)
+        oled.text("NASTAVENI JASU", 10, 0, 1)
+        
+        # Vykreslení kruhu (střed 64, 35, poloměr 20)
+        cx, cy, r = 64, 38, 20
+        
+        # Procházíme řádky kruhu
+        for y in range(-r, r + 1):
+            # Šířka kruhu v dané výšce (Pythagoras)
+            width = int(math.sqrt(r*r - y*y))
+            
+            # Vypočítáme, zda má být tento řádek vyplněný
+            # Normalizujeme y na rozsah 0..1 (odspodu nahoru)
+            normalized_h = (y + r) / (2 * r)
+            fill_threshold = current_brightness / 255.0
+            
+            if normalized_h < fill_threshold:
+                # Vyplněná část (bílá čára)
+                oled.hline(cx - width, cy - y, 2 * width, 1)
+            else:
+                # Prázdná část (jen obrys - body na krajích)
+                oled.pixel(cx - width, cy - y, 1)
+                oled.pixel(cx + width, cy - y, 1)
+
+        oled.show()
+
+        # 3. Opuštění tlačítkem
+        if sw.value() == 0:
+            while sw.value() == 0: time.sleep_ms(10) # Debounce
+            break
+        
+        time.sleep_ms(10)
+
 def perform_action(item_name):
     """Rozcestník funkcí podle vybrané položky"""
     if item_name == "Mereni Teploty":
         show_local_temp()
+        
+    elif item_name == "Jas Displeje":
+        adjust_brightness()
         
     elif item_name == "Restartovat":
         oled.fill(0)
@@ -238,6 +298,10 @@ while True:
                     selected_item = active_list[current_index]
                     print(f"Vybrano: {selected_item['label']}")
                     perform_action(selected_item['label'])
+                    
+                    # Vyčistit příznak stisku tlačítka, protože stisk pro ukončení
+                    # funkce (např. jasu) vyvolal přerušení a nastavil button_pressed=True
+                    button_pressed = False 
                     draw_menu()
         
     time.sleep_ms(10) # Malá pauza pro uvolnění CPU
