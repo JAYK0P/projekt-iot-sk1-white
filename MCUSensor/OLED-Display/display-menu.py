@@ -1,6 +1,8 @@
 from machine import Pin, I2C
 import ssd1306
 import time
+import dht
+import machine
 
 # --- NASTAVENÍ PINŮ ---
 # I2C pro OLED
@@ -17,6 +19,9 @@ SW_PIN = 4
 clk = Pin(CLK_PIN, Pin.IN, Pin.PULL_UP)
 dt = Pin(DT_PIN, Pin.IN, Pin.PULL_UP)
 sw = Pin(SW_PIN, Pin.IN, Pin.PULL_UP)
+
+# Senzor teploty (shodné s MQTTsensors.py)
+dht_sensor = dht.DHT11(Pin(14))
 
 # --- DEFINICE MENU ---
 menu_items = [
@@ -126,13 +131,56 @@ def draw_menu():
     # Vykreslení
     oled.show()
 
-def perform_action(item_name):
+def show_local_temp():
+    """Zobrazí teplotu a vlhkost z lokálního senzoru"""
     oled.fill(0)
-    oled.text("Potvrzeno:", 5, 20, 1)
-    oled.text(item_name, 5, 40, 1)
+    oled.text("Merim...", 10, 30, 1)
     oled.show()
-    time.sleep(1) # Pauza pro zobrazení akce
-    # Zde by se volala funkce podle výběru
+    
+    try:
+        dht_sensor.measure()
+        t = dht_sensor.temperature()
+        h = dht_sensor.humidity()
+        
+        while True:
+            oled.fill(0)
+            oled.text("MISTNOST:", 0, 0, 1)
+            oled.text(f"Teplota: {t} C", 0, 20, 1)
+            oled.text(f"Vlhkost: {h} %", 0, 35, 1)
+            oled.text("< Zpet tlacitkem", 0, 55, 1)
+            oled.show()
+            
+            # Čekání na stisk tlačítka pro návrat
+            if sw.value() == 0:
+                while sw.value() == 0: time.sleep_ms(10) # Debounce uvolnění
+                break
+            time.sleep_ms(100)
+            
+    except Exception as e:
+        oled.fill(0)
+        oled.text("Chyba senzoru!", 0, 20, 1)
+        oled.show()
+        time.sleep(2)
+
+def perform_action(item_name):
+    """Rozcestník funkcí podle vybrané položky"""
+    if item_name == "Mereni Teploty":
+        show_local_temp()
+        
+    elif item_name == "Restartovat":
+        oled.fill(0)
+        oled.text("Restartuji...", 10, 30, 1)
+        oled.show()
+        time.sleep(1)
+        machine.reset()
+        
+    else:
+        # Defaultní akce pro zatím neimplementované funkce
+        oled.fill(0)
+        oled.text("Potvrzeno:", 5, 20, 1)
+        oled.text(item_name, 5, 40, 1)
+        oled.show()
+        time.sleep(1) 
 
 # --- HLAVNÍ SMYČKA ---
 draw_menu() # Prvotní vykreslení
